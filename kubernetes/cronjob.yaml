@@ -1,0 +1,25 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: birthdaysbot
+spec:
+  schedule: "0 13 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  suspend: false
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: birthdaysbot
+            image: "ctadeu/birthdays_bot:0.5"
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+            - name: birthdaysbot-config
+              mountPath: /app/config
+          volumes:
+          - name: birthdaysbot-config
+            secret:
+              secretName: birthdaysbot-config
+          restartPolicy: Never
